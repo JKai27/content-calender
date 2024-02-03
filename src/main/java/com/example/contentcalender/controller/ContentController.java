@@ -48,17 +48,14 @@ public class ContentController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("")
     public void create(@Valid @RequestBody Content content) {
-        jdbcTemplateRepository.createContent(content.title(), content.desc(), content.status(),
+        jdbcTemplateRepository.createContent(content.title(), content.description(), content.status(),
                 content.contentType(), content.url());
     }
 
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     @PutMapping("/{id}")
     public void update(@RequestBody Content updatedContent, @PathVariable Integer id) {
-        if (!jdbcTemplateRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Content not found.");
-        }
-        jdbcTemplateRepository.updateContent(id, updatedContent.title(), updatedContent.desc(),
+        jdbcTemplateRepository.updateContent(id, updatedContent.title(), updatedContent.description(),
                 updatedContent.status(), updatedContent.contentType(), updatedContent.url());
     }
 

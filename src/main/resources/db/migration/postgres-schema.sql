@@ -1,16 +1,16 @@
 CREATE TABLE IF NOT EXISTS content (
-    id INTEGER AUTO_INCREMENT,
+    id SERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
-    desc TEXT,
+    description TEXT,
     status VARCHAR(20) NOT NULL,
     content_type VARCHAR(50) NOT NULL,
     date_created TIMESTAMP NOT NULL,
     date_updated TIMESTAMP,
-    url VARCHAR(255),
-    PRIMARY KEY(id)
+    url VARCHAR(255)
 );
 
-INSERT INTO content (title, desc, status, content_type, date_created)
+
+INSERT INTO content (title, description, status, content_type, date_created)
 VALUES
     ('German Grammar Basics', 'Introduction to basic grammar in German language', 'IDEA', 'ARTICLE', CURRENT_TIMESTAMP),
     ('Advanced German Vocabulary', 'Exploring advanced vocabulary in German language', 'IN_PROGRESS', 'ARTICLE', CURRENT_TIMESTAMP),

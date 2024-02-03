@@ -1,15 +1,15 @@
 ### Find all content
-GET http://localhost:8080/api/content
+GET http://localhost:8085/api/content
 
 
 ### Create a new content
-POST http://localhost:8080/api/content
+POST http://localhost:8085/api/content
 Content-Type: application/json
 
 {
     "id": 11,
     "title": "My second Blog post",
-    "desc": "second blog",
+    "description": "second blog",
     "status": "IDEA",
     "contentType": "ARTICLE",
     "dateCreated": "2024-01-31T19:14:29.888679",
@@ -18,16 +18,16 @@ Content-Type: application/json
   }
 
 ### Get content by id
-GET http://localhost:8080/api/content/2
+GET http://localhost:8085/api/content/2
 
 ### Update existing content
-PUT http://localhost:8080/api/content/1
+PUT http://localhost:8085/api/content/1
 Content-Type: application/json
 
 {
   "id": 1,
   "title": "MY First POST",
-  "desc": "MY First POST!!!",
+  "description": "MY First POST!!!",
   "status": "IDEA",
   "contentType": "ARTICLE",
   "dateCreated": "2024-01-31T19:14:29.888679",
@@ -36,4 +36,4 @@ Content-Type: application/json
 }
 
 ### Delete existing content
-DELETE http://localhost:8080/api/content/11
+DELETE http://localhost:8085/api/content/1

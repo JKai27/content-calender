@@ -3,7 +3,7 @@ package com.example.contentcalender.repository;
 import com.example.contentcalender.model.Content;
 import com.example.contentcalender.model.Status;
 import com.example.contentcalender.model.Type;
-import jakarta.annotation.PostConstruct;
+import com.example.contentcalender.service.InvalidContentOrContentNotFoundException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -22,7 +21,6 @@ public class ContentJdbcTemplateRepository {
      class already in Application context
      */
     private final JdbcTemplate jdbcTemplate;
-    private final List<Content> contentList = new ArrayList<>();
 
 
     // Autowired (injected) JdbcTemplate in Constructor
@@ -44,7 +42,7 @@ public class ContentJdbcTemplateRepository {
         return new Content(
                 rs.getInt("id"),
                 rs.getString("title"),
-                rs.getString("desc"),
+                rs.getString("description"),
                 Status.valueOf(rs.getString("status")),
                 Type.valueOf(rs.getString("content_type")),
                 rs.getObject("date_created", LocalDateTime.class),
@@ -62,7 +60,7 @@ public class ContentJdbcTemplateRepository {
         return new Content(
                 rs.getInt("id"),
                 rs.getString("title"),
-                rs.getString("desc"),
+                rs.getString("description"),
                 Status.valueOf(rs.getString("status")),
                 Type.valueOf(rs.getString("content_type")),
                 rs.getObject("date_created", LocalDateTime.class),
@@ -80,16 +78,19 @@ public class ContentJdbcTemplateRepository {
     }
 
     // 4) implement createContent()
-    public void createContent(String title, String desc, Status status, Type contentType, String URL) {
-        String sql = "INSERT INTO content (title, desc, status, content_type, date_created, URL) VALUES (?, ?, ?, ?, NOW(), ?)";
-        jdbcTemplate.update(sql, title, desc, status.toString(), contentType.toString(), URL);
+    public void createContent(String title, String description, Status status, Type contentType, String URL) {
+        String sql = "INSERT INTO content (title, description, status, content_type, date_created, URL) VALUES (?, ?, ?, ?, NOW(), ?)";
+        jdbcTemplate.update(sql, title, description, status.toString(), contentType.toString(), URL);
     }
 
     // implement updateContent()
-    public void updateContent(int id, String title, String desc, Status status, Type content_Type, String URL) {
-        String sql = "UPDATE content SET title = ?, desc = ?, status = ?, content_type = ?," +
+    public void updateContent(int id, String title, String description, Status status, Type content_Type, String URL) {
+        String sql = "UPDATE content SET title = ?, description = ?, status = ?, content_type = ?," +
                 " date_created = NOW(), url = ? WHERE id = ?";
-        jdbcTemplate.update(sql, title, desc, status.toString(), content_Type.toString(), URL, id);
+        int updatedRow = jdbcTemplate.update(sql, title, description, status.toString(), content_Type.toString(), URL, id);
+        if (updatedRow == 0) {
+            throw new InvalidContentOrContentNotFoundException("Content with id " + id + " not found");
+        }
     }
 
 
@@ -104,23 +105,5 @@ public class ContentJdbcTemplateRepository {
         String sql = "SELECT * FROM content WHERE id = ?";
         Content content = jdbcTemplate.queryForObject(sql, new Object[]{id}, contentRowMapper);
         return content;
-    }
-
-    @PostConstruct
-    private void init() {
-        Content content = new Content(
-                1,
-                "My first Article",
-                "Go ahead and read it",
-                Status.IDEA,
-                Type.ARTICLE,
-                LocalDateTime.now(),
-                null,
-                "");
-        contentList.add(content);
-    }
-
-    public boolean existsById(Integer id) {
-        return contentList.stream().filter(content -> content.id().equals(id)).count() == 1;
     }
 }
