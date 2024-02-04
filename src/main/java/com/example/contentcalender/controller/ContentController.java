@@ -5,6 +5,7 @@ import com.example.contentcalender.repository.ContentCollectionRepository;
 import com.example.contentcalender.repository.ContentJdbcTemplateRepository;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -52,15 +53,14 @@ public class ContentController {
                 content.contentType(), content.url());
     }
 
-    @ResponseStatus(HttpStatus.NOT_FOUND)
     @PutMapping("/{id}")
-    public void update(@RequestBody Content updatedContent, @PathVariable Integer id) {
+    public ResponseEntity<?> update(@RequestBody Content updatedContent, @PathVariable Integer id) {
         jdbcTemplateRepository.updateContent(id, updatedContent.title(), updatedContent.description(),
                 updatedContent.status(), updatedContent.contentType(), updatedContent.url());
+        return ResponseEntity.ok("Success");
     }
 
 
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Integer id) {
         jdbcTemplateRepository.deleteContent(id);

@@ -72,9 +72,8 @@ public class ContentJdbcTemplateRepository {
     // 3) implement getAllContent()
     public List<Content> getAllContent() {
         String sql = "SELECT * FROM content";
-        List<Content> contents = jdbcTemplate.query(sql, ContentJdbcTemplateRepository::mapRow);
         //  List<Content> contentList = jdbcTemplate.query(sql,contentRowMapper);
-        return contents;
+        return jdbcTemplate.query(sql, ContentJdbcTemplateRepository::mapRow);
     }
 
     // 4) implement createContent()
